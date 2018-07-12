@@ -9,6 +9,8 @@ boolean circ_box_collide(PVector circ, float rad, PVector box, PVector dim) {
   float distanceX = circ.x - closestX;
   float distanceY = circ.y - closestY;
   
+  line(closestX, closestY, circ.x, circ.y);
+  
   // If this distance is less than the circles radius, the circle and box overlap
   float distanceSquared = (distanceX * distanceX) + (distanceY * distanceY);  // Note that we use distance squared
   return distanceSquared < (rad * rad);                                       // this saves on computational time.
