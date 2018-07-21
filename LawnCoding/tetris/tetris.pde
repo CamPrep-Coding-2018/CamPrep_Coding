@@ -43,9 +43,13 @@ void draw() {
       for (int i = 0; i < 4; i++) 
         block[i].y ++;
         checkBlockStopped();
-     
-   }
-  
+   } 
+   if (lost) {
+     textAlign(CENTER, CENTER);
+     fill(0,255);
+     text("GAME OVER", width/2, height/2);
+     textAlign(LEFT, BOTTOM);
+   }  
   
    stroke(255,255);
    strokeWeight(2);
@@ -71,8 +75,8 @@ void rotateBlock(int dir) {
       relative[i] = PVector.sub(b, block[1]);
       relative[i++].rotate(float(dir) * HALF_PI);
    }
-   for (i = 0; i < 4; i++) { //<>//
-     block[i] = PVector.add(block[1], (relative[i])); //<>//
+   for (i = 0; i < 4; i++) {
+     block[i] = PVector.add(block[1], (relative[i]));
    }
 
    sanitiseBlock();
@@ -104,7 +108,7 @@ void checkLinesComplete() {
 }
 
 void dropBlocks(int line) {
-   for (int y = line - 1; y >= 0; y--) { //<>//
+   for (int y = line - 1; y >= 0; y--) {
      for (int x = 0; x < w; x++) {
        PVector b = getBlockAt(x, y);
        if (b != null) {
@@ -149,8 +153,6 @@ void checkBlockStopped() {
     score += 5;
     checkLinesComplete();
     if (checkLost()) {
-       textAlign(CENTER, CENTER);
-       text("GAME OVER", width/2, height/2);
        return;
     }
     else
