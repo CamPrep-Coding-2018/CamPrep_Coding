@@ -1,20 +1,19 @@
- //<>// //<>//
-boolean[][] grid;
+boolean[][] grid; //<>// //<>//
 
 int w, h;
 float s;
 
 void setup() {
   size(800, 800);
-  w = 20;
-  h = 20;
+  w = 30;
+  h = 30;
 
   s = width / (w+2);
 
   grid = new boolean[w][h];
   for (int i = 0; i < w; i++) {
     for (int j = 0; j < h; j++) {
-      grid[i][j] = random(1) < .2;
+      grid[i][j] = random(1) < .3;
     }
   }
 
@@ -32,11 +31,11 @@ void setup() {
   }
   temp_distance[0] = 0;
 
-  int source_ind = 0;
+  source_ind = 0;
   target_ind = int(floor(random(num_cells)));
 
-  PVector source = ind2sub(source_ind);
-  PVector target = ind2sub(target_ind);
+  source = ind2sub(source_ind);
+  target = ind2sub(target_ind);
 
   source_x = int(source.x); 
   source_y = int(source.y);
@@ -52,7 +51,8 @@ void setup() {
   path = FindPath(dists_to_draw, source_ind, target_ind);
 }
 
-int target_ind;
+PVector source, target;
+int source_ind, target_ind;
 int[] dists_to_draw;
 int[] path;
 
@@ -103,13 +103,36 @@ void draw() {
     text(to_visit_dist.get(i), (p.x + 1.5) * s, (p.y + 1.5) * s);
   }
 
-  for (int x = 0; x < 20; x++) {
-    for (int y = 0; y < 20; y++) {
+  for (int x = 0; x < w; x++) {
+    for (int y = 0; y < h; y++) {
       text(dists_to_draw[sub2ind(x, y)], (x + 1.5) * s, (y + 1.5) * s);
     }
   }
 
-  for (int i = 0; i < dists_to_draw[target_ind]; i++) {
+
+  target = new PVector(floor((mouseX / s) - 1), floor((mouseY / s) - 1));
+  target_ind = sub2ind(int(target.x), int(target.y));
+  //target_ind = int(floor(random(num_cells)));
+  //PVector target = ind2sub(target_ind);
+
+  if (target.x >= 0 && target.y >= 0 && target.x < w && target.y < h 
+      && target_ind >= 0 && target_ind < w * h
+      && !grid[int(target.x)][int(target.y)]) {
+    source_x = int(source.x); 
+    source_y = int(source.y);
+    target_x = int(target.x); 
+    target_y = int(target.y);
+
+    grid[source_x][source_y] = false;
+    //grid[target_x][target_y] = false;
+    to_visit.add(source_x);
+    to_visit_dist.add(0);
+
+    dists_to_draw = PathFind(source_ind, target_ind);
+    path = FindPath(dists_to_draw, source_ind, target_ind);
+  }
+
+  for (int i = 0; i < path.length; i++) {
     PVector p = ind2sub(path[i]);
     fill(0, 255, 0, 100);
     rect((p.x+1) * s, (p.y + 1) * s, s, s);
@@ -177,10 +200,10 @@ void pathFindStep() {
 }
 
 int[] PathFind(int source, int target) {
-  int[] dists = new int[400];
-  boolean[] have_visited = new boolean[400];
+  int[] dists = new int[w * h];
+  boolean[] have_visited = new boolean[w * h];
 
-  for (int i = 0; i < 400; i++) {
+  for (int i = 0; i < w * h; i++) {
     dists[i] = 100000;
     have_visited[i] = false;
   }
@@ -188,9 +211,9 @@ int[] PathFind(int source, int target) {
   dists[source] = 0;
 
   int next_index = 0;
-  while (!have_visited[target]) {
+  while (isValid(target) && !have_visited[target]) {
     int smallest = 1000000;
-    for (int i = 0; i < 400; i++) {
+    for (int i = 0; i < w * h; i++) {
       if (dists[i] < smallest && !have_visited[i]) {
         smallest = dists[i];
         next_index = i;
@@ -200,17 +223,17 @@ int[] PathFind(int source, int target) {
     have_visited[next_index] = true;
 
     int n_i = 0;
-    if (next_index % 20 > 0) {
+    if (next_index % w > 0) {
       n_i = next_index - 1;
       if (isValid(n_i) && dists[n_i] > smallest + 1) dists[n_i] = smallest + 1;
     }
-    if (next_index % 20 < 19) {
+    if (next_index % w < (w - 1)) {
       n_i = next_index + 1;
       if (isValid(n_i) && dists[n_i] > smallest + 1) dists[n_i] = smallest + 1;
     }
-    n_i = next_index - 20;
+    n_i = next_index - w;
     if (isValid(n_i) && dists[n_i] > smallest + 1) dists[n_i] = smallest + 1;
-    n_i = next_index + 20;
+    n_i = next_index + w;
     if (isValid(n_i) && dists[n_i] > smallest + 1) dists[n_i] = smallest + 1;
   }
 
@@ -223,18 +246,18 @@ int[] FindPath(int[] dists, int source, int target) {
   int index = target;
   out[dists[target]-1] = target;
   for (int i = dists[target] - 1; i >= 0; i--) {
-    if ((target % 20 > 0) && dists[index - 1] == i) {
+    if ((target % w > 0) && dists[index - 1] == i) {
       out[i] = index - 1;
       index = index - 1;
-    } else if ((target % 20 < 19) && dists[index+1] == i) {
+    } else if ((target % w < (w-1)) && dists[index+1] == i) {
       out[i] = index + 1;
       index++;
-    } else if ((target >= 20) && dists[index - 20] == i) {
-      out[i] = index - 20;
-      index -= 20;
-    } else if ((target < 380) && dists[index + 20] == i) {
-      out[i] = index + 20;
-      index+= 20;
+    } else if ((target >= w) && dists[index - w] == i) {
+      out[i] = index - w;
+      index -= w;
+    } else if ((target < ((h - 1) * w)) && dists[index + w] == i) {
+      out[i] = index + w;
+      index+= w;
     }
   }
 
