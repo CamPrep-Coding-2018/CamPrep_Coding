@@ -7,6 +7,6 @@ application.windows64
 application.macosx
 _site
 Gemfile
-.lock
+Gemfile.lock
 .sass-cache
 .jekyll-metadata
