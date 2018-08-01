@@ -4,6 +4,7 @@ Class material for the coding course taught at CamPrep 2018
 # Further reading
 
 Processing videos:  
+Processing tutorials : https://processing.org/tutorials/
 Coding Train youtube channel : https://www.youtube.com/user/shiffman/videos  
 
 Processing books:  
