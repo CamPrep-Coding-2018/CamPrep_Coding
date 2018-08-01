@@ -4,8 +4,9 @@ Class material for the coding course taught at CamPrep 2018
 # Further reading
 
 Processing videos:  
-Processing tutorials : https://processing.org/tutorials/
+Processing tutorials : https://processing.org/tutorials/  
 Coding Train youtube channel : https://www.youtube.com/user/shiffman/videos  
+Networking with processing : https://processing.org/tutorials/network/  
 
 Processing books:  
 The Nature of Code : https://natureofcode.com/ (free ebook)  
@@ -18,4 +19,5 @@ AI / Machine learning :
 Setup python : https://www.python.org/about/gettingstarted/  
 Python tutorial : https://docs.python.org/3/tutorial/  
 Sentdex youtube channel : https://www.youtube.com/watch?v=OGxgnH8y2NM&list=PLQVvvaa0QuDfKTOs3Keq_kaG2P55YRn5v  
+TensorFlow tutorials : https://www.tensorflow.org/tutorials/  
 Practical Genetic Algorithms : https://pdfs.semanticscholar.org/0a9e/a477abb8e3c286b77cef2b68da582d720e20.pdf  
